@@ -9,30 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('students', function (Blueprint $table) {
-
             $table->id();
-
-            $table->string('student_code')->unique();
-            $table->string('name');
-            $table->date('dob')->nullable();
-
-            $table->string('phone')->nullable();
-            $table->string('email')->nullable();
-
+            $table->foreignId('guardian_id')->constrained('guardians');
+            $table->string('admission_no')->unique();
+            $table->string('roll_no')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->date('dob');
+            $table->string('gender');
             $table->text('address')->nullable();
-
-            $table->string('guardian_name')->nullable();
-            $table->string('guardian_phone')->nullable();
-
-            $table->enum('status', ['active', 'inactive'])->default('active');
-
+            $table->foreignId('class_id')->constrained('classes');
+            $table->foreignId('stream_id')->constrained('streams');
             $table->timestamps();
         });
-    }
 
+    }
 
     /**
      * Reverse the migrations.
