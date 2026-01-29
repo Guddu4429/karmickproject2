@@ -10,6 +10,7 @@ use App\Livewire\Students\Fees;
 use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
 use App\Livewire\Students\Settings;
+use App\Livewire\Guardians\Children as GuardianChildren;
 
 // Student Portal Routes - Dashboard is root route
 Route::get('/', Dashboard::class)->name('student.dashboard');
@@ -28,4 +29,10 @@ Route::prefix('student')->name('student.')->group(function () {
     Route::get('/exams', Exams::class)->name('exams');
     Route::get('/notifications', Notifications::class)->name('notifications');
     Route::get('/settings', Settings::class)->name('settings');
+});
+
+// Guardian Portal Routes
+Route::prefix('guardian')->name('guardian.')->group(function () {
+    Route::get('/', GuardianChildren::class)->name('children');
+    Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
 });

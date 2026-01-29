@@ -1,7 +1,13 @@
 <div>
     <!-- Header -->
     <div class="bg-primary text-white rounded-4 p-4 mb-4">
-        <h4 class="mb-1">Welcome, {{ Auth::user()->name ?? 'Student Name' }}</h4>
+        <h4 class="mb-1">
+            @if(!empty($student))
+                {{ $student->first_name }} {{ $student->last_name }} (Class {{ $student->class_name ?? '-' }})
+            @else
+                Welcome, {{ Auth::user()->name ?? 'Student Name' }}
+            @endif
+        </h4>
         <small>{{ now()->format('l, F d, Y') }}</small>
     </div>
  
