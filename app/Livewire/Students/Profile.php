@@ -3,7 +3,6 @@
 namespace App\Livewire\Students;
 
 use Livewire\Component;
-use Illuminate\Support\Facades\Auth;
 
 class Profile extends Component
 {

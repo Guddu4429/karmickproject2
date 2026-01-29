@@ -11,9 +11,8 @@ use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
 use App\Livewire\Students\Settings;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Student Portal Routes - Dashboard is root route
+Route::get('/', Dashboard::class)->name('student.dashboard');
 
 Route::get('/students', Students::class)
     ->name('students');
@@ -21,9 +20,8 @@ Route::get('/students', Students::class)
 Route::get('/students/create', CreateStudent::class)
     ->name('students.create');
 
-// Student Portal Routes
+// Other Student Portal Routes
 Route::prefix('student')->name('student.')->group(function () {
-    Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/profile', Profile::class)->name('profile');
     Route::get('/attendance', Attendance::class)->name('attendance');
     Route::get('/fees', Fees::class)->name('fees');

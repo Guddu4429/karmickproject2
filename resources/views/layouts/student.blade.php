@@ -15,8 +15,8 @@
     @livewireStyles
 </head>
 <body class="bg-light">
-    <div class="container-fluid">
-        <div class="row">
+    <div class="container-fluid py-4">
+        <div class="row g-4">
             <!-- Sidebar -->
             @php
                 $currentRoute = request()->route()->getName();
@@ -41,9 +41,7 @@
 
             <!-- Main Content -->
             <div class="col-lg-9 col-xl-10">
-                <div class="py-4">
-                    {{ $slot }}
-                </div>
+                {{ $slot }}
             </div>
         </div>
     </div>
@@ -57,5 +55,6 @@
     @stack('scripts')
     
     @livewireScripts
+    @stack('scripts')
 </body>
 </html>

@@ -35,3 +35,12 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
+.table td.fee-due {
+  color: #dc3545 !important; 
+  font-weight: 600 !important;
+}
+
+.table td.fee-paid {
+  color: #198754; 
+  font-weight: 600;
+}

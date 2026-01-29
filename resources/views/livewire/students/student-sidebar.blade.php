@@ -1,5 +1,5 @@
-<aside class="col-lg-3 col-xl-2 position-sticky" style="top: 0; height: 100vh; overflow-y: auto;">
-    <div class="bg-white h-100 rounded-4 p-3 shadow-sm" style="position: sticky; top: 1rem;">
+<aside class="col-lg-3 col-xl-2">
+    <div class="bg-white h-100 rounded-4 p-3 shadow-sm">
         <h5 class="fw-bold mb-4 text-primary">DPS Ruby Park</h5>
 
         <ul class="nav flex-column gap-2">
