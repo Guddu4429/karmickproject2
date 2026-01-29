@@ -9,10 +9,12 @@
         <!-- KPI Cards -->
         <div class="row g-4 mb-4">
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-3">
-                    <small class="text-muted">Attendance</small>
-                    <h3 class="fw-bold">90%</h3>
-                </div>
+                <a href="{{ route('student.attendance') }}" class="text-decoration-none">
+                    <div class="card shadow-sm border-0 rounded-4 p-3 hover-shadow">
+                        <small class="text-muted">Attendance</small>
+                        <h3 class="fw-bold">90%</h3>
+                    </div>
+                </a>
             </div>
             <div class="col-md-3">
                 <div class="card shadow-sm border-0 rounded-4 p-3">
@@ -106,7 +108,12 @@
 
             <div class="col-lg-6">
                 <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <h5 class="fw-semibold mb-2">Attendance Trend</h5>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-semibold mb-0">Attendance Trend</h5>
+                        <a href="{{ route('student.attendance') }}" class="btn btn-sm btn-outline-primary">
+                            View Details <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
                     <div style="height: 220px;">
                         <canvas id="attendanceChart"></canvas>
                     </div>
@@ -114,3 +121,7 @@
             </div>
         </div>
 </div>
+
+@push('scripts')
+<script src="{{ asset('js/attendance-chart.js') }}"></script>
+@endpush

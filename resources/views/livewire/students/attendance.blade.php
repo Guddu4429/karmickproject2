@@ -87,3 +87,7 @@
             </small>
         </div>
 </div>
+
+@push('scripts')
+<script src="{{ asset('js/attendance-chart.js') }}"></script>
+@endpush
