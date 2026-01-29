@@ -15,7 +15,7 @@
     <!-- KPI Cards -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <a href="{{ route('student.attendance') }}" class="text-decoration-none">
+            <a href="{{ $isGuardian && $studentId ? route('student.attendance', ['student' => $studentId]) : route('student.attendance') }}" class="text-decoration-none">
                 <div class="card shadow-sm border-0 rounded-4 p-3 hover-shadow">
                     <small class="text-muted">Attendance</small>
                     <h3 class="fw-bold">
@@ -139,7 +139,7 @@
             <div class="card shadow-sm border-0 rounded-4 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-semibold mb-0">Attendance Trend</h5>
-                    <a href="{{ route('student.attendance') }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{{ $isGuardian && $studentId ? route('student.attendance', ['student' => $studentId]) : route('student.attendance') }}" class="btn btn-sm btn-outline-primary">
                         View Details <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
