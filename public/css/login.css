@@ -95,6 +95,22 @@ body {
   color: #1d3b1d;
 }
 
+.login-btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.login-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.login-btn i {
+  font-size: 1.1rem;
+}
+
 /* Footer */
 .login-footer {
   background: #05245d;

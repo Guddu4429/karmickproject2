@@ -22,7 +22,7 @@ class Dashboard extends Component
         if ($user) {
             $roleName = DB::table('roles')->where('id', $user->role_id)->value('name');
             if ($roleName === 'Guardian' && $this->studentId === null) {
-                redirect()->route('guardian.children')->send();
+                $this->redirect(route('guardian.children'), navigate: true);
             }
         }
     }

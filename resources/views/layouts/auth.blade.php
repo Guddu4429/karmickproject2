@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Login | DPS Ruby Park</title>
+  <title>@yield('title', 'Login | DPS Ruby Park')</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap Icons -->
@@ -17,26 +17,7 @@
 <body class="login-body">
 
 <div class="page-overlay">
-
-  <!-- Left Branding -->
-  <div class="branding-panel">
-    <h1>
-      Delhi Public School<br>
-      Ruby Park
-    </h1>
-  </div>
-
-  <!-- Login Area -->
-  <div class="login-area">
-    <div class="login-box">
-      <h2>Select Login</h2>
-
-      <a href="{{ route('student.login') }}" class="login-btn">Student Login</a>
-      <a href="{{ route('faculty.login') }}" class="login-btn">Faculty Login</a>
-      <a href="{{ route('admin.login') }}" class="login-btn">Admin Login</a>
-    </div>
-  </div>
-
+  {{ $slot }}
 </div>
 
 <footer class="login-footer">
@@ -62,7 +43,6 @@
 
   </div>
 </footer>
-
 
 </body>
 </html>

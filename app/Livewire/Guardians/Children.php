@@ -41,7 +41,7 @@ class Children extends Component
         return view('livewire.guardians.children', [
             'guardianId' => $guardianId,
             'children' => $children,
-        ]);
+        ])->layout('layouts.student');
     }
 }
 

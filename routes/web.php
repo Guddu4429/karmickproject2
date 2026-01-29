@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SignInController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Livewire\Auth\Login as AuthLogin;
 use App\Livewire\Students;
 use App\Livewire\Students\CreateStudent;
 use App\Livewire\Students\Dashboard;
@@ -14,26 +16,17 @@ use App\Livewire\Students\Settings;
 use App\Livewire\Guardians\Children as GuardianChildren;
 
 // Authentication Routes (Public)
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+Route::get('/login', AuthLogin::class)->name('login');
+
+// Login form routes (Public - No auth required, but guest middleware)
+Route::middleware('guest')->group(function () {
+    Route::get('/login/{type}', [LoginController::class, 'show'])->name('login.form');
+    Route::post('/login/{type}', [LoginController::class, 'login'])->name('login.submit');
+});
 
 // Sign-in routes (Public - No auth required)
 Route::get('/signin', [SignInController::class, 'create'])->name('signin.create');
 Route::post('/signin', [SignInController::class, 'store'])->name('signin.store');
-
-// Placeholder routes for login page buttons
-Route::get('/student-login', function () {
-    return view('auth.login')->with('message', 'Student login coming soon');
-})->name('student.login');
-
-Route::get('/faculty-login', function () {
-    return view('auth.login')->with('message', 'Faculty login coming soon');
-})->name('faculty.login');
-
-Route::get('/admin-login', function () {
-    return view('auth.login')->with('message', 'Admin login coming soon');
-})->name('admin.login');
 
 // Student Portal Routes (Protected - Authenticated users)
 Route::middleware('auth')->group(function () {
