@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Student Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/student_dashboard.css">
+</head>
+
+<body class="bg-light">
+
+<div class="container-fluid py-4">
+  <div class="row g-4">
+
+    <!-- Sidebar -->
+    <aside class="col-lg-3 col-xl-2">
+      <div class="bg-white h-100 rounded-4 p-3 shadow-sm">
+        <h5 class="fw-bold mb-4 text-primary">DPS Ruby Park</h5>
+
+        <ul class="nav flex-column gap-2">
+          <li><a class="nav-link active text-primary fw-semibold" href="#"><i class="bi bi-house me-2"></i>Dashboard</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-calendar-check me-2"></i>Attendance</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-cash me-2"></i>Fees</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-journal-text me-2"></i>Exams</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-bell me-2"></i>Notifications</a></li>
+          <li><a class="nav-link text-secondary" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="col-lg-9 col-xl-10">
+
+      <!-- Header -->
+      <div class="bg-primary text-white rounded-4 p-4 mb-4">
+        <h4 class="mb-1">Welcome, Student Name</h4>
+        <small>Wednesday, January 28, 2026</small>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-3">
+          <div class="card shadow-sm border-0 rounded-4 p-3">
+            <small class="text-muted">Attendance</small>
+            <h3 class="fw-bold">90%</h3>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card shadow-sm border-0 rounded-4 p-3">
+            <small class="text-muted">Fees Due</small>
+            <h3 class="fw-bold">₹5,000</h3>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card shadow-sm border-0 rounded-4 p-3">
+            <small class="text-muted">Upcoming Exam</small>
+            <h6 class="fw-semibold mb-0">Unit Test</h6>
+            <small class="text-muted">Feb 10, 2026</small>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card shadow-sm border-0 rounded-4 p-3">
+            <small class="text-muted">Overall Grade</small>
+            <h3 class="fw-bold text-success">A</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Academic Performance -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-7">
+          <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h5 class="fw-semibold mb-3">Academic Performance</h5>
+
+            <div class="table-responsive">
+              <table class="table table-sm align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Subject</th>
+                    <th>Unit Test</th>
+                    <th>Half-Yearly</th>
+                    <th>Annual</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Math</td>
+                    <td>85</td>
+                    <td>92</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>Science</td>
+                    <td>78</td>
+                    <td>88</td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <td>English</td>
+                    <td>90</td>
+                    <td>85</td>
+                    <td>-</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <button class="btn btn-outline-primary btn-sm mt-2">
+              Download Marksheet
+            </button>
+          </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="col-lg-5">
+          <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h5 class="fw-semibold mb-3">Alerts & Notifications</h5>
+
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item px-0">💳 Fee payment due by Jan 31</li>
+              <li class="list-group-item px-0">📘 Science marks updated</li>
+              <li class="list-group-item px-0">📅 Parent-Teacher Meeting</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row -->
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h5 class="fw-semibold mb-2">Upcoming Activities</h5>
+            <p class="mb-1">🔬 Science Project – Feb 5</p>
+            <p class="mb-0">👨‍👩‍👧 Parent-Teacher Meeting</p>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h5 class="fw-semibold mb-2">Attendance Trend</h5>
+            <div style="height: 220px;">
+              <canvas id="attendanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/attendance-chart.js"></script>
+</body>
+</html>
