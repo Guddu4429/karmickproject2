@@ -18,27 +18,45 @@
             <a href="{{ route('student.attendance') }}" class="text-decoration-none">
                 <div class="card shadow-sm border-0 rounded-4 p-3 hover-shadow">
                     <small class="text-muted">Attendance</small>
-                    <h3 class="fw-bold">90%</h3>
+                    <h3 class="fw-bold">
+                        @if(!empty($attendance) && isset($attendance['percentage']) && $attendance['percentage'] !== null)
+                            {{ $attendance['percentage'] }}%
+                        @else
+                            -
+                        @endif
+                    </h3>
                 </div>
             </a>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm border-0 rounded-4 p-3">
                 <small class="text-muted">Fees Due</small>
-                <h3 class="fw-bold">₹5,000</h3>
+                <h3 class="fw-bold {{ (!empty($fees) && ($fees['due'] ?? 0) > 0) ? 'text-danger' : 'text-success' }}">
+                    @if(!empty($fees))
+                        ₹{{ number_format($fees['due'] ?? 0, 2) }}
+                    @else
+                        ₹0.00
+                    @endif
+                </h3>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm border-0 rounded-4 p-3">
                 <small class="text-muted">Upcoming Exam</small>
-                <h6 class="fw-semibold mb-0">Unit Test</h6>
-                <small class="text-muted">Feb 10, 2026</small>
+                <h6 class="fw-semibold mb-0">
+                    {{ $latestResult->exam_name ?? 'N/A' }}
+                </h6>
+                <small class="text-muted">
+                    {{ $latestResult->academic_year ?? '' }}
+                </small>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card shadow-sm border-0 rounded-4 p-3">
                 <small class="text-muted">Overall Grade</small>
-                <h3 class="fw-bold text-success">A</h3>
+                <h3 class="fw-bold text-success">
+                    {{ $latestResult->grade ?? '-' }}
+                </h3>
             </div>
         </div>
     </div>
@@ -60,24 +78,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Math</td>
-                                <td>85</td>
-                                <td>92</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>Science</td>
-                                <td>78</td>
-                                <td>88</td>
-                                <td>-</td>
-                            </tr>
-                            <tr>
-                                <td>English</td>
-                                <td>90</td>
-                                <td>85</td>
-                                <td>-</td>
-                            </tr>
+                            @forelse($subjectPerformance as $row)
+                                <tr>
+                                    <td>{{ $row['subject_name'] }}</td>
+                                    <td>{{ $row['unit_test'] ?? '-' }}</td>
+                                    <td>{{ $row['half_yearly'] ?? '-' }}</td>
+                                    <td>{{ $row['annual'] ?? '-' }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-3">
+                                        No marks data available yet.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

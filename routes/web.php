@@ -40,16 +40,21 @@ Route::middleware('auth')->group(function () {
 
     // Other Student Portal Routes
     Route::prefix('student')->name('student.')->group(function () {
-        Route::get('/profile', Profile::class)->name('profile');
-        Route::get('/attendance', Attendance::class)->name('attendance');
-        Route::get('/fees', Fees::class)->name('fees');
-        Route::get('/exams', Exams::class)->name('exams');
-        Route::get('/notifications', Notifications::class)->name('notifications');
-        Route::get('/settings', Settings::class)->name('settings');
+        // Optional {student} parameter so guardians can have /student/{id}/... URLs,
+        // while non-guardian users can still hit /student/... without an id.
+        Route::get('/{student?}/profile', Profile::class)->name('profile');
+        Route::get('/{student?}/attendance', Attendance::class)->name('attendance');
+        Route::get('/{student?}/fees',        Fees::class)->name('fees');
+        Route::get('/{student?}/exams',       Exams::class)->name('exams');
+        Route::get('/{student?}/notifications', Notifications::class)->name('notifications');
+        Route::get('/{student?}/settings',    Settings::class)->name('settings');
     });
 
+    // Guardian Portal Routes
     Route::prefix('guardian')->name('guardian.')->group(function () {
-    Route::get('/', GuardianChildren::class)->name('children');
-    Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
+        // Show children cards (no sidebar) as guardian home
+        Route::get('/', GuardianChildren::class)->name('children');
+        // Open specific student's dashboard
+        Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
     });
 });

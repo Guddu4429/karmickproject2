@@ -90,6 +90,7 @@ class LoginController extends Controller
 
                 // If multiple students, redirect to selection page
                 if ($studentCount > 1) {
+                    $request->session()->forget('active_student_id');
                     return redirect()->route('guardian.children');
                 } 
                 // If single student, redirect to their dashboard
@@ -98,6 +99,7 @@ class LoginController extends Controller
                         ->where('guardian_id', $guardianId)
                         ->first();
                     if ($student) {
+                        $request->session()->put('active_student_id', $student->id);
                         return redirect()->route('guardian.student.dashboard', ['student' => $student->id]);
                     }
                 }
