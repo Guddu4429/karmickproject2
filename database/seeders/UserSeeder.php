@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,37 +14,49 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Get role IDs
-        $principalRole = Role::where('name', 'Principal')->first();
-        $facultyRole = Role::where('name', 'Faculty')->first();
-        $guardianRole = Role::where('name', 'Guardian')->first();
+        $principalRoleId = DB::table('roles')->where('name', 'Principal')->value('id');
+        $facultyRoleId = DB::table('roles')->where('name', 'Faculty')->value('id');
+        $guardianRoleId = DB::table('roles')->where('name', 'Guardian')->value('id');
+
+        if (! $principalRoleId || ! $facultyRoleId || ! $guardianRoleId) {
+            return;
+        }
 
         // 1. Create/Update Principal User
-        $principal = User::updateOrCreate(
+        DB::table('users')->updateOrInsert(
             ['email' => 'principal@dpsrpk.edu'],
             [
                 'name' => 'Dr. John Smith',
+                'email' => 'principal@dpsrpk.edu',
                 'phone' => '+91 98765 43210',
                 'password' => Hash::make('password'),
-                'role_id' => $principalRole->id,
+                'role_id' => $principalRoleId,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
+        $principalId = DB::table('users')->where('email', 'principal@dpsrpk.edu')->value('id');
 
         // 2. Create/Update Faculty User
-        $faculty = User::updateOrCreate(
+        DB::table('users')->updateOrInsert(
             ['email' => 'faculty@dpsrpk.edu'],
             [
                 'name' => 'Mrs. Sarah Johnson',
+                'email' => 'faculty@dpsrpk.edu',
                 'phone' => '+91 98765 43211',
                 'password' => Hash::make('password'),
-                'role_id' => $facultyRole->id,
+                'role_id' => $facultyRoleId,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
+        $facultyId = DB::table('users')->where('email', 'faculty@dpsrpk.edu')->value('id');
 
         // Create/Update Teacher record for faculty
         DB::table('teachers')->updateOrInsert(
             ['employee_code' => 'EMP001'],
             [
-                'user_id' => $faculty->id,
+                'user_id' => $facultyId,
                 'designation' => 'Senior Teacher',
                 'email' => 'faculty@dpsrpk.edu',
                 'phone' => '+91 98765 43211',
@@ -56,19 +66,23 @@ class UserSeeder extends Seeder
         );
 
         // 3. Create/Update Guardian User
-        $guardian = User::updateOrCreate(
+        DB::table('users')->updateOrInsert(
             ['email' => 'guardian@example.com'],
             [
                 'name' => 'Mr. Rajesh Kumar',
+                'email' => 'guardian@example.com',
                 'phone' => '+91 91234 56789',
                 'password' => Hash::make('password'),
-                'role_id' => $guardianRole->id,
+                'role_id' => $guardianRoleId,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         );
+        $guardianUserId = DB::table('users')->where('email', 'guardian@example.com')->value('id');
 
         // Create/Update Guardian record
         DB::table('guardians')->updateOrInsert(
-            ['user_id' => $guardian->id],
+            ['user_id' => $guardianUserId],
             [
                 'name' => 'Mr. Rajesh Kumar',
                 'phone' => '+91 91234 56789',
@@ -80,7 +94,7 @@ class UserSeeder extends Seeder
         );
 
         // Get guardian ID
-        $guardianId = DB::table('guardians')->where('user_id', $guardian->id)->value('id');
+        $guardianId = DB::table('guardians')->where('user_id', $guardianUserId)->value('id');
 
         // Get class and stream IDs
         $class11 = DB::table('classes')->where('name', '11')->first();

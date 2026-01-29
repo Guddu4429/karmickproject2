@@ -11,6 +11,7 @@ use App\Livewire\Students\Fees;
 use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
 use App\Livewire\Students\Settings;
+use App\Livewire\Guardians\Children as GuardianChildren;
 
 // Authentication Routes (Public)
 Route::get('/login', function () {
@@ -52,5 +53,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/exams', Exams::class)->name('exams');
         Route::get('/notifications', Notifications::class)->name('notifications');
         Route::get('/settings', Settings::class)->name('settings');
+    });
+
+    Route::prefix('guardian')->name('guardian.')->group(function () {
+    Route::get('/', GuardianChildren::class)->name('children');
+    Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
     });
 });

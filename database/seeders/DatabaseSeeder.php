@@ -16,6 +16,15 @@ class DatabaseSeeder extends Seeder
             ClassSeeder::class,
             StreamSeeder::class,
             UserSeeder::class,
+            SubjectSeeder::class,
+            TeacherSubjectSeeder::class,
+            ExamSeeder::class,
+            MarkSeeder::class,
+            ResultSeeder::class,
+            AttendanceSeeder::class,
+            FeePaymentSeeder::class,
+            PreviousEducationSeeder::class,
+            TeacherAttendanceLogSeeder::class,
         ]);
     }
 }
