@@ -135,5 +135,6 @@
  
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script src="{{ asset('js/attendance-chart.js') }}"></script>
 @endpush
