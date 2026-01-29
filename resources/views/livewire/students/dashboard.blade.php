@@ -123,35 +123,6 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{{-- <script>
-    // Attendance Chart
-    const ctx = document.getElementById('attendanceChart');
-    if (ctx) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Attendance %',
-                    data: [85, 88, 90, 87, 92, 90],
-                    borderColor: 'rgb(13, 110, 253)',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 70,
-                        max: 100
-                    }
-                }
-            }
-        });
-    }
-</script> --}}
+
 <script src="{{ asset('js/attendance-chart.js') }}"></script>
 @endpush
