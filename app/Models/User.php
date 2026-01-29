@@ -47,4 +47,20 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the role that owns the user.
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Check if user is Principal
+     */
+    public function isPrincipal(): bool
+    {
+        return $this->role && $this->role->name === 'Principal';
+    }
 }

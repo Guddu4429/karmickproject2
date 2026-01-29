@@ -1,0 +1,56 @@
+/* Login page responsive styles */
+@media (max-width: 768px) {
+  .branding-panel {
+    display: none;
+  }
+
+  .login-box {
+    margin: 1.5rem;
+    padding: 2rem;
+  }
+
+  .signin-box {
+    padding: 1.75rem;
+  }
+
+  .signin-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    margin-bottom: 1rem;
+  }
+
+  .form-row-split {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .form-group label {
+    font-size: 0.85rem;
+  }
+
+  .form-control {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .login-btn {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .login-btn.btn-primary {
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+  }
+
+  .alert {
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+  }
+}
