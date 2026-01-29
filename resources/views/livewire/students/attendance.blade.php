@@ -89,7 +89,7 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+{{-- <script>
     const ctx = document.getElementById('attendanceChart');
     if (ctx) {
         new Chart(ctx, {
@@ -117,6 +117,6 @@
             }
         });
     }
-</script>
+</script> --}}
 <script src="{{ asset('js/attendance-chart.js') }}"></script>
 @endpush
