@@ -25,12 +25,6 @@
         Admin Login
       </a>
 
-      <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.2);">
-        <a href="{{ route('signin.create') }}" class="login-btn login-btn-secondary">
-          <i class="bi bi-person-plus"></i>
-          Create Account
-        </a>
-      </div>
     </div>
   </div>
 </div>
