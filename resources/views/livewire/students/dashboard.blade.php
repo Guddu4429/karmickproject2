@@ -4,7 +4,11 @@
         <h4 class="mb-1">Welcome, {{ Auth::user()->name ?? 'Student Name' }}</h4>
         <small>{{ now()->format('l, F d, Y') }}</small>
     </div>
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> c3248b8569a45248a4dc3542128cd914e73aba91
     <!-- KPI Cards -->
     <div class="row g-4 mb-4">
         <div class="col-md-3">
@@ -104,7 +108,11 @@
                 <p class="mb-0">👨‍👩‍👧 Parent-Teacher Meeting</p>
             </div>
         </div>
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> c3248b8569a45248a4dc3542128cd914e73aba91
         <div class="col-lg-6">
             <div class="card shadow-sm border-0 rounded-4 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
