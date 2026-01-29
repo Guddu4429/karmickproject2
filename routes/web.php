@@ -14,6 +14,7 @@ use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
 use App\Livewire\Students\Settings;
 use App\Livewire\Guardians\Children as GuardianChildren;
+use App\Http\Controllers\MarksheetController;
 
 // Authentication Routes (Public)
 Route::get('/login', AuthLogin::class)->name('login');
@@ -57,4 +58,8 @@ Route::middleware('auth')->group(function () {
         // Open specific student's dashboard
         Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
     });
+
+    // Marksheet Download Routes
+    Route::get('/marksheet/{resultId}/download', [MarksheetController::class, 'download'])->name('marksheet.download');
+    Route::get('/marksheet/latest/download', [MarksheetController::class, 'downloadLatest'])->name('marksheet.download.latest');
 });
