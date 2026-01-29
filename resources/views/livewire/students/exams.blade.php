@@ -127,6 +127,7 @@
                             <th>Academic Year</th>
                             <th>Percentage</th>
                             <th>Grade</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,10 +137,17 @@
                                 <td>{{ $res->academic_year }}</td>
                                 <td>{{ $res->percentage }}%</td>
                                 <td>{{ $res->grade }}</td>
+                                <td>
+                                    <a href="{{ route('marksheet.download', ['resultId' => $res->id]) }}" 
+                                       class="btn btn-sm btn-outline-primary" 
+                                       target="_blank">
+                                        <i class="bi bi-download"></i> Download PDF
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-3">
+                                <td colspan="5" class="text-center text-muted py-3">
                                     No results available yet.
                                 </td>
                             </tr>

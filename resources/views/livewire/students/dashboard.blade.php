@@ -96,9 +96,17 @@
                     </table>
                 </div>
  
-                <button class="btn btn-outline-primary btn-sm mt-2">
-                    Download Marksheet
-                </button>
+                @if(!empty($latestResult))
+                    <a href="{{ route('marksheet.download', ['resultId' => $latestResult->id]) }}" 
+                       class="btn btn-outline-primary btn-sm mt-2" 
+                       target="_blank">
+                        <i class="bi bi-download"></i> Download Marksheet
+                    </a>
+                @else
+                    <button class="btn btn-outline-primary btn-sm mt-2" disabled>
+                        <i class="bi bi-download"></i> Download Marksheet
+                    </button>
+                @endif
             </div>
         </div>
  
