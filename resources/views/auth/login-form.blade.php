@@ -31,8 +31,8 @@
     <div class="login-box signin-box">
       <div class="signin-header">
         <h2>
-          @if($type === 'student')
-            Student Login
+          @if($type === 'guardian')
+            Guardian Login
           @elseif($type === 'teacher')
             Teacher Login
           @elseif($type === 'admin')
@@ -46,10 +46,10 @@
         <div class="alert alert-danger">
           <i class="bi bi-exclamation-circle"></i>
           <div class="alert-content">
-            <strong>Please fix the following :</strong>
+           
             <ul>
               @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
+                <li>Email address or password is incorrect</li>
               @endforeach
             </ul>
           </div>
@@ -85,16 +85,6 @@
             <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
           </div>
         </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="checkbox-label">
-              <input type="checkbox" name="remember" id="remember">
-              <span>Remember me</span>
-            </label>
-          </div>
-        </div>
-
         <div class="form-actions">
           <button type="submit" class="login-btn btn-primary">
             <i class="bi bi-box-arrow-in-right"></i>
@@ -103,7 +93,7 @@
           
           <a href="{{ route('login') }}" class="login-btn login-btn-secondary">
             <i class="bi bi-arrow-left"></i>
-            Back to Login Selection
+            Back 
           </a>
         </div>
       </form>
