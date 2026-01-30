@@ -8,12 +8,16 @@ class TeacherSubject extends Model
 {
     public $incrementing = false;
 
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'teacher_id',
+        'stream_id',
         'subject_id',
         'class_id',
+        'date',
+        'time',
+        'status',
     ];
 
     public function teacher()

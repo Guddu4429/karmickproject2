@@ -62,40 +62,62 @@
         @if($isPrincipal)
             <!-- Admin/Principal KPI Cards -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Total Students</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Total Students</small>
+                        <a href="{{ route('students') }}" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $totalStudents }}</h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Total Teachers</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Total Teachers</small>
+                        <a href="{{ route('teachers') }}" class="btn btn-sm btn-outline-primary">
+                            View
+                        </a>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $totalTeachers }}</h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">New Admissions</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">New Admissions</small>
+                        <span></span>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $newAdmissions }}</h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Upcoming Exams</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Upcoming Exams</small>
+                        <span></span>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $upcomingExams }}</h3>
                 </div>
             </div>
         @elseif($isTeacher)
             <!-- Teacher KPI Cards -->
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Classes Assigned</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Classes Assigned</small>
+                        <span></span>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $classesAssigned }}</h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Subjects Handled</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Subjects Handled</small>
+                        <span></span>
+                    </div>
                     <div class="overflow-auto" style="max-height: 80px;">
                         @if(!empty($subjectsHandled) && count($subjectsHandled) > 0)
                             <ul class="list-unstyled mb-0 small">
@@ -110,14 +132,20 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Attendance Pending</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Attendance Pending</small>
+                        <span></span>
+                    </div>
                     <h3 class="fw-bold text-danger mb-0">{{ $attendancePending }}</h3>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Upcoming Exams</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Upcoming Exams</small>
+                        <span></span>
+                    </div>
                     <h3 class="fw-bold mb-0">{{ $upcomingExam }}</h3>
                 </div>
             </div>
@@ -125,9 +153,12 @@
             <!-- Student KPI Cards -->
             <div class="col-md-3">
                 <a href="{{ route('student.attendance') }}" class="text-decoration-none">
-                    <div class="card shadow-sm border-0 rounded-4 p-3 hover-shadow">
-                        <small class="text-muted">Attendance</small>
-                        <h3 class="fw-bold">
+                    <div class="card shadow-sm border-0 rounded-4 p-4 h-100 hover-shadow">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <small class="text-muted">Attendance</small>
+                            <span></span>
+                        </div>
+                        <h3 class="fw-bold mb-0">
                             @if(!empty($attendance) && isset($attendance['percentage']) && $attendance['percentage'] !== null)
                                 {{ $attendance['percentage'] }}%
                             @else
@@ -138,9 +169,12 @@
                 </a>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-3">
-                    <small class="text-muted">Fees Due</small>
-                    <h3 class="fw-bold {{ (!empty($fees) && ($fees['due'] ?? 0) > 0) ? 'text-danger' : 'text-success' }}">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Fees Due</small>
+                        <span></span>
+                    </div>
+                    <h3 class="fw-bold mb-0 {{ (!empty($fees) && ($fees['due'] ?? 0) > 0) ? 'text-danger' : 'text-success' }}">
                         @if(!empty($fees))
                             ₹{{ number_format($fees['due'] ?? 0, 2) }}
                         @else
@@ -150,8 +184,11 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-3">
-                    <small class="text-muted">Upcoming Exam</small>
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Upcoming Exam</small>
+                        <span></span>
+                    </div>
                     <h6 class="fw-semibold mb-0">
                         {{ $latestResult->exam_name ?? 'N/A' }}
                     </h6>
@@ -161,9 +198,12 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-3">
-                    <small class="text-muted">Overall Grade</small>
-                    <h3 class="fw-bold text-success">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <small class="text-muted">Overall Grade</small>
+                        <span></span>
+                    </div>
+                    <h3 class="fw-bold mb-0 text-success">
                         {{ $latestResult->grade ?? '-' }}
                     </h3>
                 </div>
