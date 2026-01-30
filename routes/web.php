@@ -12,6 +12,7 @@ use App\Livewire\Students\Attendance;
 use App\Livewire\Students\Fees;
 use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
+use App\Livewire\Students\Enquiry;
 use App\Livewire\Students\Settings;
 use App\Livewire\Guardians\Children as GuardianChildren;
 use App\Livewire\Faculty\Dashboard as FacultyDashboard;
@@ -57,6 +58,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{student?}/fees',        Fees::class)->name('fees');
         Route::get('/{student?}/exams',       Exams::class)->name('exams');
         Route::get('/{student?}/notifications', Notifications::class)->name('notifications');
+        Route::get('/{student?}/enquiry',     Enquiry::class)->name('enquiry');
         Route::get('/{student?}/settings',    Settings::class)->name('settings');
     });
 
