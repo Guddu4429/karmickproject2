@@ -63,6 +63,16 @@
                 </a>
             </li>
 
+            {{-- Enquiry --}}
+            <li>
+                <a
+                    class="nav-link {{ $activeMenu === 'enquiry' ? 'active text-primary fw-semibold' : 'text-secondary' }}"
+                    href="{{ $isGuardian && $studentId ? route('student.enquiry', ['student' => $studentId]) : route('student.enquiry') }}"
+                >
+                    <i class="bi bi-envelope-paper me-2"></i>Enquiry
+                </a>
+            </li>
+
             {{-- Settings --}}
             <li>
                 <a

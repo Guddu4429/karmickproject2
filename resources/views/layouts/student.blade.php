@@ -32,6 +32,8 @@
                     $activeMenu = 'exams';
                 } elseif (str_contains($currentRoute, 'notifications')) {
                     $activeMenu = 'notifications';
+                } elseif (str_contains($currentRoute, 'enquiry')) {
+                    $activeMenu = 'enquiry';
                 } elseif (str_contains($currentRoute, 'settings')) {
                     $activeMenu = 'settings';
                 }
