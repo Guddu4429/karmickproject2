@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\DB;
 class Exams extends Component
 {
     public $student = null;
-    public ?object $latestResult = null;
+    public $selectedYear = null;
+    public $selectedExamName = null;
+    public array $yearOptions = [];
+    public array $examNameOptions = [];
+    public ?object $selectedResult = null;
     public array $subjectMarks = [];
     public array $upcomingExams = [];
     public array $marksheets = [];
@@ -56,39 +60,45 @@ class Exams extends Component
 
         $this->student = $student;
 
-        // Latest result (if any)
+        // Find the latest result (same logic as Dashboard)
         $latestResult = DB::table('results')
             ->join('exams', 'exams.id', '=', 'results.exam_id')
             ->where('results.student_id', $student->id)
+            ->orderByDesc('exams.academic_year')
             ->orderByDesc('results.id')
             ->select([
-                'results.*',
-                'exams.name as exam_name',
+                'results.exam_id',
                 'exams.academic_year',
             ])
             ->first();
 
-        $this->latestResult = $latestResult;
+        // Load distinct academic years from exams that have results for this student
+        $years = DB::table('results')
+            ->join('exams', 'exams.id', '=', 'results.exam_id')
+            ->where('results.student_id', $student->id)
+            ->distinct()
+            ->orderByDesc('exams.academic_year')
+            ->pluck('exams.academic_year');
 
-        // Subject-wise marks for latest exam
-        if ($latestResult) {
-            $this->subjectMarks = DB::table('marks')
-                ->join('subjects', 'subjects.id', '=', 'marks.subject_id')
-                ->where('marks.student_id', $student->id)
-                ->where('marks.exam_id', $latestResult->exam_id)
-                ->select([
-                    'subjects.name as subject_name',
-                    'marks.marks_obtained',
-                ])
-                ->get()
-                ->map(function ($row) {
-                    return [
-                        'subject_name' => $row->subject_name,
-                        'marks' => $row->marks_obtained,
-                    ];
-                })
-                ->all();
+        $this->yearOptions = $years->all();
+
+        // Select the latest year from the latest result by default
+        if ($latestResult && ! $this->selectedYear) {
+            $this->selectedYear = $latestResult->academic_year;
+        } elseif (count($this->yearOptions) > 0 && ! $this->selectedYear) {
+            $this->selectedYear = $this->yearOptions[0];
         }
+
+        // Load exam names for the selected year
+        $this->loadExamNames();
+
+        // Select the latest exam from the latest result by default
+        if ($latestResult && ! $this->selectedExamName) {
+            $this->selectedExamName = $latestResult->exam_id;
+        }
+
+        // Load exam details
+        $this->loadExamDetails();
 
         // Upcoming exams = exams for student's class in future academic year (simple demo)
         $this->upcomingExams = DB::table('exams')
@@ -118,6 +128,80 @@ class Exams extends Component
             ])
             ->get()
             ->all();
+    }
+
+    public function loadExamNames(): void
+    {
+        if (! $this->student || ! $this->selectedYear) {
+            $this->examNameOptions = [];
+            $this->selectedExamName = null;
+            return;
+        }
+
+        // Load exam names for selected year that have results for this student
+        $exams = DB::table('results')
+            ->join('exams', 'exams.id', '=', 'results.exam_id')
+            ->where('results.student_id', $this->student->id)
+            ->where('exams.academic_year', $this->selectedYear)
+            ->distinct()
+            ->orderByDesc('results.id')
+            ->get(['exams.id', 'exams.name']);
+
+        $this->examNameOptions = $exams->mapWithKeys(fn ($e) => [$e->id => $e->name])->all();
+
+        // Select the latest exam name by default (first one from results ordered by id desc)
+        if (count($this->examNameOptions) > 0 && ! $this->selectedExamName) {
+            $this->selectedExamName = array_key_first($this->examNameOptions);
+        }
+    }
+
+    public function loadExamDetails(): void
+    {
+        if (! $this->student || ! $this->selectedExamName) {
+            $this->selectedResult = null;
+            $this->subjectMarks = [];
+            return;
+        }
+
+        // Load result for selected exam
+        $this->selectedResult = DB::table('results')
+            ->join('exams', 'exams.id', '=', 'results.exam_id')
+            ->where('results.student_id', $this->student->id)
+            ->where('results.exam_id', $this->selectedExamName)
+            ->select([
+                'results.*',
+                'exams.name as exam_name',
+                'exams.academic_year',
+            ])
+            ->first();
+
+        // Load subject-wise marks for selected exam
+        $this->subjectMarks = DB::table('marks')
+            ->join('subjects', 'subjects.id', '=', 'marks.subject_id')
+            ->where('marks.student_id', $this->student->id)
+            ->where('marks.exam_id', $this->selectedExamName)
+            ->select([
+                'subjects.name as subject_name',
+                'marks.marks_obtained',
+            ])
+            ->get()
+            ->map(fn ($row) => [
+                'subject_name' => $row->subject_name,
+                'marks' => $row->marks_obtained,
+            ])
+            ->all();
+    }
+
+    public function updatedSelectedYear(): void
+    {
+        $this->selectedExamName = null;
+        $this->loadExamNames();
+        $this->loadExamDetails();
+    }
+
+    public function updatedSelectedExamName(): void
+    {
+        $this->loadExamDetails();
     }
 
     public function render()

@@ -46,8 +46,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/students', Students::class)
         ->name('students');
 
-    Route::get('/students/create', CreateStudent::class)
-        ->name('students.create');
 
     // Other Student Portal Routes
     Route::prefix('student')->name('student.')->group(function () {
