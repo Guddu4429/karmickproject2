@@ -63,4 +63,20 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->name === 'Principal';
     }
+
+    /**
+     * Check if user is Faculty
+     */
+    public function isFaculty(): bool
+    {
+        return $this->role && $this->role->name === 'Faculty';
+    }
+
+    /**
+     * Get the teacher record for faculty users.
+     */
+    public function teacher()
+    {
+        return $this->hasOne(\App\Models\Teacher::class);
+    }
 }

@@ -472,6 +472,18 @@ class Dashboard extends Component
             }
         }
 
+        // Determine if user is guardian and get student ID for route generation
+        $isGuardian = false;
+        $studentIdForRoute = null;
+        $user = Auth::user();
+        if ($user) {
+            $roleName = DB::table('roles')->where('id', $user->role_id)->value('name');
+            $isGuardian = $roleName === 'Guardian';
+            if ($isGuardian && $this->studentId) {
+                $studentIdForRoute = $this->studentId;
+            }
+        }
+
         return view('livewire.students.dashboard')
             ->with([
                 'student' => $student,
