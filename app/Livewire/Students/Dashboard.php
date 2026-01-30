@@ -15,6 +15,25 @@ class Dashboard extends Component
     public ?object $latestResult = null;
     public array $subjectPerformance = [];
 
+    // Teacher-specific properties
+    public ?object $teacher = null;
+    public int $classesAssigned = 0;
+    public array $subjectsHandled = [];
+    public int $attendancePending = 0;
+    public string $upcomingExam = 'N/A';
+    public array $todaySchedule = [];
+    public array $attendanceAlerts = [];
+    public array $adminNotices = [];
+    public ?object $checkInStatus = null;
+
+    // Admin/Principal-specific properties
+    public int $totalStudents = 0;
+    public int $totalTeachers = 0;
+    public int $newAdmissions = 0;
+    public string $upcomingExams = 'N/A';
+    public array $enquiries = [];
+    public ?object $selectedEnquiry = null;
+
     public function mount($student = null): void
     {
         // If guardian opens /guardian/students/{student}/dashboard we receive {student} here.
@@ -41,9 +60,314 @@ class Dashboard extends Component
         }
     }
 
+    public function checkIn(): void
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return;
+        }
+
+        $roleName = DB::table('roles')->where('id', $user->role_id)->value('name');
+        if ($roleName !== 'Faculty') {
+            return;
+        }
+
+        $teacher = DB::table('teachers')->where('user_id', $user->id)->first();
+        if (!$teacher) {
+            return;
+        }
+
+        $today = now()->toDateString();
+        $currentTime = now()->toTimeString();
+
+        // Check if already checked in today
+        $existingLog = DB::table('teacher_attendance_logs')
+            ->where('teacher_id', $teacher->id)
+            ->where('attendance_date', $today)
+            ->first();
+
+        if ($existingLog && $existingLog->check_in_time) {
+            // Already checked in
+            return;
+        }
+
+        if ($existingLog) {
+            // Update existing record
+            DB::table('teacher_attendance_logs')
+                ->where('id', $existingLog->id)
+                ->update([
+                    'check_in_time' => $currentTime,
+                    'status' => 'Present',
+                    'updated_at' => now(),
+                ]);
+        } else {
+            // Create new record
+            DB::table('teacher_attendance_logs')->insert([
+                'teacher_id' => $teacher->id,
+                'attendance_date' => $today,
+                'check_in_time' => $currentTime,
+                'status' => 'Present',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        // Refresh check-in status
+        $this->checkInStatus = DB::table('teacher_attendance_logs')
+            ->where('teacher_id', $teacher->id)
+            ->where('attendance_date', $today)
+            ->first();
+
+        // Dispatch event to show toast
+        $this->dispatch('checkInSuccess');
+    }
+
+    public function checkOut(): void
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return;
+        }
+
+        $roleName = DB::table('roles')->where('id', $user->role_id)->value('name');
+        if ($roleName !== 'Faculty') {
+            return;
+        }
+
+        $teacher = DB::table('teachers')->where('user_id', $user->id)->first();
+        if (!$teacher) {
+            return;
+        }
+
+        $today = now()->toDateString();
+        $currentTime = now()->toTimeString();
+
+        // Update check-out time
+        DB::table('teacher_attendance_logs')
+            ->where('teacher_id', $teacher->id)
+            ->where('attendance_date', $today)
+            ->update([
+                'check_out_time' => $currentTime,
+                'updated_at' => now(),
+            ]);
+
+        // Refresh check-in status
+        $this->checkInStatus = DB::table('teacher_attendance_logs')
+            ->where('teacher_id', $teacher->id)
+            ->where('attendance_date', $today)
+            ->first();
+    }
+
+    public function toggleEnquiryRead($enquiryId): void
+    {
+        $enquiry = DB::table('enquiries')->where('id', $enquiryId)->first();
+        if ($enquiry) {
+            DB::table('enquiries')
+                ->where('id', $enquiryId)
+                ->update(['is_read' => !$enquiry->is_read]);
+            
+            // Refresh enquiries list
+            $this->loadEnquiries();
+        }
+    }
+
+    public function viewEnquiry($enquiryId): void
+    {
+        $this->selectedEnquiry = DB::table('enquiries')->where('id', $enquiryId)->first();
+        
+        // Mark as read when viewing
+        if ($this->selectedEnquiry && !$this->selectedEnquiry->is_read) {
+            DB::table('enquiries')
+                ->where('id', $enquiryId)
+                ->update(['is_read' => true]);
+            $this->selectedEnquiry->is_read = true;
+        }
+    }
+
+    public function closeEnquiryView(): void
+    {
+        $this->selectedEnquiry = null;
+    }
+
+    private function loadEnquiries(): void
+    {
+        $this->enquiries = DB::table('enquiries')
+            ->orderByDesc('created_at')
+            ->limit(10)
+            ->get()
+            ->map(function ($enquiry, $index) {
+                return [
+                    'id' => $enquiry->id,
+                    'sl_no' => $index + 1,
+                    'email_from' => $enquiry->email_from,
+                    'subject' => $enquiry->subject,
+                    'is_read' => (bool) $enquiry->is_read,
+                    'created_at' => $enquiry->created_at,
+                ];
+            })
+            ->toArray();
+    }
+
     public function render()
     {
+        $user = Auth::user();
+        $roleName = $user ? DB::table('roles')->where('id', $user->role_id)->value('name') : null;
+        $isTeacher = $roleName === 'Faculty';
+        $isPrincipal = $roleName === 'Principal';
+        $isGuardian = $roleName === 'Guardian';
+        $isStudent = $roleName === 'Student';
+
         $student = null;
+
+        // Load admin/principal data if principal is logged in
+        if ($isPrincipal) {
+            // Total Students
+            $this->totalStudents = DB::table('students')->count();
+
+            // Total Teachers
+            $this->totalTeachers = DB::table('teachers')->count();
+
+            // New Admissions (students created in last 30 days)
+            $this->newAdmissions = DB::table('students')
+                ->where('created_at', '>=', now()->subDays(30))
+                ->count();
+
+            // Upcoming Exams
+            $upcomingExam = DB::table('exams')
+                ->where('academic_year', now()->format('Y'))
+                ->orderBy('created_at')
+                ->first();
+            $this->upcomingExams = $upcomingExam ? $upcomingExam->name : 'N/A';
+
+            // Load enquiries
+            $this->loadEnquiries();
+
+            // Get attendance alerts (mock for now)
+            $this->attendanceAlerts = [
+                'Class IX-B attendance pending',
+                'Attendance cutoff alert for Class X-A',
+            ];
+
+            // Get admin notices (mock for now)
+            $this->adminNotices = [
+                'Half-Yearly exams start from 15th September',
+                'Marks submission deadline: 10th September',
+            ];
+        }
+
+        // Load teacher data if teacher is logged in (not principal)
+        if ($isTeacher) {
+            $teacher = DB::table('teachers')
+                ->where('user_id', $user->id)
+                ->first();
+
+            if ($teacher) {
+                $this->teacher = $teacher;
+
+                // Get classes assigned count (unique classes from teacher_subjects)
+                $this->classesAssigned = DB::table('teacher_subjects')
+                    ->where('teacher_id', $teacher->id)
+                    ->distinct('class_id')
+                    ->count('class_id');
+
+                // Get subjects handled (array of subject names)
+                $subjects = DB::table('teacher_subjects')
+                    ->join('subjects', 'subjects.id', '=', 'teacher_subjects.subject_id')
+                    ->where('teacher_subjects.teacher_id', $teacher->id)
+                    ->distinct('subjects.name')
+                    ->pluck('subjects.name')
+                    ->toArray();
+                $this->subjectsHandled = !empty($subjects) ? array_unique($subjects) : [];
+
+                // Get attendance pending count (students in teacher's classes without attendance for today)
+                $today = now()->toDateString();
+                
+                // Get class IDs and subject IDs that this teacher teaches
+                $teacherAssignments = DB::table('teacher_subjects')
+                    ->where('teacher_id', $teacher->id)
+                    ->get(['class_id', 'subject_id']);
+                
+                $pendingCount = 0;
+                foreach ($teacherAssignments as $assignment) {
+                    // Count students in this class/stream combination
+                    $students = DB::table('students')
+                        ->where('class_id', $assignment->class_id)
+                        ->get(['id', 'stream_id']);
+                    
+                    foreach ($students as $student) {
+                        // Check if attendance exists for this student, subject, and date
+                        $attendanceExists = DB::table('attendance')
+                            ->where('student_id', $student->id)
+                            ->where('subject_id', $assignment->subject_id)
+                            ->where('date', $today)
+                            ->exists();
+                        
+                        if (!$attendanceExists) {
+                            $pendingCount++;
+                        }
+                    }
+                }
+                
+                $this->attendancePending = $pendingCount;
+
+                // Get upcoming exam (next exam by date for classes this teacher teaches)
+                $teacherClassIds = DB::table('teacher_subjects')
+                    ->where('teacher_id', $teacher->id)
+                    ->distinct()
+                    ->pluck('class_id')
+                    ->toArray();
+
+                $upcomingExam = DB::table('exams')
+                    ->whereIn('class_id', $teacherClassIds)
+                    ->where('academic_year', now()->format('Y'))
+                    ->orderBy('name')
+                    ->first();
+                $this->upcomingExam = $upcomingExam ? $upcomingExam->name : 'N/A';
+
+                // Get today's teaching schedule (mock data for now - would need a schedule table)
+                // For now, show classes and subjects assigned
+                $scheduleData = DB::table('teacher_subjects')
+                    ->join('subjects', 'subjects.id', '=', 'teacher_subjects.subject_id')
+                    ->join('classes', 'classes.id', '=', 'teacher_subjects.class_id')
+                    ->leftJoin('streams', 'streams.id', '=', 'subjects.stream_id')
+                    ->where('teacher_subjects.teacher_id', $teacher->id)
+                    ->select([
+                        'classes.name as class_name',
+                        'streams.name as section_name',
+                        'subjects.name as subject_name',
+                    ])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'class' => $item->class_name,
+                            'section' => $item->section_name ?? '-',
+                            'subject' => $item->subject_name,
+                            'time' => '09:00 – 09:45', // Mock time - would come from schedule table
+                            'status' => now()->format('H:i') >= '09:00' && now()->format('H:i') <= '09:45' ? 'Completed' : 'Pending',
+                        ];
+                    })
+                    ->toArray();
+                $this->todaySchedule = $scheduleData;
+
+                // Get attendance alerts (mock for now)
+                $this->attendanceAlerts = [
+                    'Class IX-B attendance pending',
+                    'Attendance cutoff alert for Class X-A',
+                ];
+
+                // Get admin notices (mock for now)
+                $this->adminNotices = [
+                    'Half-Yearly exams start from 15th September',
+                    'Marks submission deadline: 10th September',
+                ];
+
+                // Get check-in status for today
+                $this->checkInStatus = DB::table('teacher_attendance_logs')
+                    ->where('teacher_id', $teacher->id)
+                    ->where('attendance_date', $today)
+                    ->first();
+            }
+        }
 
         if ($this->studentId) {
             // Guardian ownership check (guardian can only view their own children)
@@ -155,6 +479,25 @@ class Dashboard extends Component
                 'fees' => $this->fees,
                 'latestResult' => $this->latestResult,
                 'subjectPerformance' => $this->subjectPerformance,
+                'isTeacher' => $isTeacher,
+                'isPrincipal' => $isPrincipal,
+                'isGuardian' => $isGuardian,
+                'isStudent' => $isStudent,
+                'teacher' => $this->teacher,
+                'classesAssigned' => $this->classesAssigned,
+                'subjectsHandled' => $this->subjectsHandled,
+                'attendancePending' => $this->attendancePending,
+                'upcomingExam' => $this->upcomingExam,
+                'todaySchedule' => $this->todaySchedule,
+                'attendanceAlerts' => $this->attendanceAlerts,
+                'adminNotices' => $this->adminNotices,
+                'checkInStatus' => $this->checkInStatus,
+                'totalStudents' => $this->totalStudents,
+                'totalTeachers' => $this->totalTeachers,
+                'newAdmissions' => $this->newAdmissions,
+                'upcomingExams' => $this->upcomingExams,
+                'enquiries' => $this->enquiries,
+                'selectedEnquiry' => $this->selectedEnquiry,
             ])
             ->layout('layouts.student');
     }

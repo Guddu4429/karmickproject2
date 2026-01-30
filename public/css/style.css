@@ -33,3 +33,28 @@ body {
   color: #198754; 
   font-weight: 600;
 }
+
+/* Check-in/Check-out Button Styles */
+.btn-checkin {
+  background-color: #198754;
+  color: white;
+  border-color: #198754;
+}
+
+.btn-checkin:hover {
+  background-color: #157347;
+  border-color: #146c43;
+  color: white;
+}
+
+.btn-checkout {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.btn-checkout:hover {
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+  color: white;
+}
