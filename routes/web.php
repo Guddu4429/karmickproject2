@@ -14,6 +14,15 @@ use App\Livewire\Students\Exams;
 use App\Livewire\Students\Notifications;
 use App\Livewire\Students\Settings;
 use App\Livewire\Guardians\Children as GuardianChildren;
+use App\Livewire\Faculty\Dashboard as FacultyDashboard;
+use App\Livewire\Faculty\StudentAttendance as FacultyStudentAttendance;
+use App\Livewire\Faculty\CheckInOut;
+use App\Livewire\Faculty\MarksResults;
+use App\Livewire\Faculty\ClassesSubjects;
+use App\Livewire\Faculty\PerformanceReports;
+use App\Livewire\Faculty\ReportsPdf;
+use App\Livewire\Faculty\Notifications as FacultyNotifications;
+use App\Livewire\Faculty\Profile as FacultyProfile;
 use App\Http\Controllers\MarksheetController;
 
 // Authentication Routes (Public)
@@ -31,7 +40,7 @@ Route::post('/signin', [SignInController::class, 'store'])->name('signin.store')
 
 // Student Portal Routes (Protected - Authenticated users)
 Route::middleware('auth')->group(function () {
-    Route::get('/', Dashboard::class)->name('student.dashboard');
+    Route::get('/', Dashboard::class)->name('student.dashboard')->middleware('redirect.faculty');
 
     Route::get('/students', Students::class)
         ->name('students');
@@ -57,6 +66,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/', GuardianChildren::class)->name('children');
         // Open specific student's dashboard
         Route::get('/students/{student}/dashboard', Dashboard::class)->name('student.dashboard');
+    });
+
+    // Faculty Portal Routes (Protected - Faculty only)
+    Route::middleware('faculty')->prefix('faculty')->name('faculty.')->group(function () {
+        Route::get('/', FacultyDashboard::class)->name('dashboard');
+        Route::get('/attendance', FacultyStudentAttendance::class)->name('attendance');
+        Route::get('/check-in', CheckInOut::class)->name('checkin');
+        Route::get('/marks', MarksResults::class)->name('marks');
+        Route::get('/classes', ClassesSubjects::class)->name('classes');
+        Route::get('/performance', PerformanceReports::class)->name('performance');
+        Route::get('/reports', ReportsPdf::class)->name('reports');
+        Route::get('/notifications', FacultyNotifications::class)->name('notifications');
+        Route::get('/profile', FacultyProfile::class)->name('profile');
     });
 
     // Marksheet Download Routes

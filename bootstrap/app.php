@@ -13,6 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'principal' => \App\Http\Middleware\EnsurePrincipal::class,
+            'faculty' => \App\Http\Middleware\EnsureFaculty::class,
+            'redirect.faculty' => \App\Http\Middleware\RedirectFacultyToPortal::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         ]);
     })
