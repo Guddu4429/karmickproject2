@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\SignInController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Livewire\Auth\Login as AuthLogin;
 use App\Livewire\Students;
+use App\Livewire\Teachers;
 use App\Livewire\Students\CreateStudent;
 use App\Livewire\Students\Dashboard;
 use App\Livewire\Students\Profile;
@@ -47,6 +48,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/students/create', CreateStudent::class)
         ->name('students.create');
+
+    Route::get('/teachers', Teachers::class)
+        ->name('teachers');
 
     // Other Student Portal Routes
     Route::prefix('student')->name('student.')->group(function () {
