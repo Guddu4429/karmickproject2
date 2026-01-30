@@ -1,0 +1,11 @@
+
+/* Login page */
+@media (max-width: 768px) {
+  .branding-panel {
+    display: none;
+  }
+
+  .login-box {
+    margin: 1.5rem;
+  }
+}
