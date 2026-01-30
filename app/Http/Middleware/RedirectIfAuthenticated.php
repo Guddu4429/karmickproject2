@@ -17,6 +17,9 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
+            if (Auth::user()->isFaculty()) {
+                return redirect()->route('faculty.dashboard');
+            }
             return redirect('/');
         }
 

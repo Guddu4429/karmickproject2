@@ -111,7 +111,12 @@ class LoginController extends Controller
             }
         }
 
-        // For other roles (Principal and Faculty), redirect to main dashboard
+        // For Faculty, redirect to faculty dashboard
+        if ($expectedRole === 'Faculty') {
+            return redirect()->route('faculty.dashboard');
+        }
+
+        // For Principal and others, redirect to home
         return redirect('/');
     }
 }
