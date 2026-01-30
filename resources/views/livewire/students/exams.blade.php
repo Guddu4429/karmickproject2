@@ -16,48 +16,59 @@
             Please select a student first.
         </div>
     @else
-        <!-- Exam Summary -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Latest Exam</small>
-                    <h5 class="fw-semibold mb-0">
-                        {{ $latestResult->exam_name ?? 'N/A' }}
-                    </h5>
+        <!-- Exam Selector -->
+        <div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Academic Year</label>
+                    <select class="form-select" wire:model.live="selectedYear">
+                        @foreach($yearOptions as $year)
+                            <option value="{{ $year }}">{{ $year }}</option>
+                        @endforeach
+                    </select>
                 </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Total Marks</small>
-                    <h5 class="fw-semibold mb-0">
-                        {{ isset($latestResult) ? $latestResult->total_marks : 'N/A' }}
-                    </h5>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Examination</label>
+                    <select class="form-select" wire:model.live="selectedExamName">
+                        @if(count($examNameOptions) === 0)
+                            <option value="">No exams available</option>
+                        @else
+                            @foreach($examNameOptions as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
+                            @endforeach
+                        @endif
+                    </select>
                 </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Percentage</small>
-                    <h5 class="fw-semibold mb-0">
-                        {{ isset($latestResult) ? $latestResult->percentage.'%' : 'N/A' }}
-                    </h5>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow-sm border-0 rounded-4 p-4">
-                    <small class="text-muted">Grade</small>
-                    <h5 class="fw-semibold mb-0">
-                        {{ $latestResult->grade ?? 'N/A' }}
-                    </h5>
+                <div class="col-md-6">
+                    @if($selectedResult)
+                        <label class="form-label fw-semibold d-block">Result Summary</label>
+                        <div class="d-flex gap-2">
+                            <div class="flex-fill text-center p-2 bg-light rounded">
+                                <small class="text-muted d-block">Percentage</small>
+                                <strong class="text-primary">{{ $selectedResult->percentage }}%</strong>
+                            </div>
+                            <div class="flex-fill text-center p-2 bg-light rounded">
+                                <small class="text-muted d-block">Grade</small>
+                                <strong class="text-success">{{ $selectedResult->grade }}</strong>
+                            </div>
+                            <div class="flex-fill text-center p-2 bg-light rounded">
+                                <small class="text-muted d-block">Total</small>
+                                <strong>{{ $selectedResult->total_marks }}</strong>
+                            </div>
+                        </div>
+                    @else
+                        <label class="form-label fw-semibold d-block opacity-0">-</label>
+                        <div class="alert alert-info mb-0 py-2">
+                            <small><i class="bi bi-info-circle me-1"></i>No result available for this exam</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
 
         <!-- Exam Results Table -->
         <div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
-            <h5 class="fw-semibold mb-3">Subject-wise Marks (Latest Exam)</h5>
+            <h5 class="fw-semibold mb-3">Subject-wise Marks</h5>
 
             <div class="table-responsive">
                 <table class="table table-sm align-middle">
@@ -71,53 +82,37 @@
                         @forelse($subjectMarks as $row)
                             <tr>
                                 <td>{{ $row['subject_name'] }}</td>
-                                <td>{{ $row['marks'] }}</td>
+                                <td><span class="badge bg-primary">{{ $row['marks'] }}</span></td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="2" class="text-center text-muted py-3">
-                                    No marks recorded yet.
+                                    @if($selectedExamName)
+                                        No marks recorded for this exam yet.
+                                    @else
+                                        Please select a year and exam to view marks.
+                                    @endif
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
+
+            @if($selectedResult)
+                <div class="text-end mt-3">
+                    <a href="{{ route('marksheet.download', ['resultId' => $selectedResult->id]) }}" 
+                       class="btn btn-primary btn-sm" 
+                       target="_blank">
+                        <i class="bi bi-download me-1"></i>Download Marksheet
+                    </a>
+                </div>
+            @endif
         </div>
 
-        <!-- Exam Schedule (simple list of exams for the class) -->
-        <div class="card shadow-sm border-0 rounded-4 p-4 mb-4">
-            <h5 class="fw-semibold mb-3">Examinations ({{ $student->class_name ?? '-' }})</h5>
-
-            <div class="table-responsive">
-                <table class="table table-sm align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Exam</th>
-                            <th>Academic Year</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($upcomingExams as $exam)
-                            <tr>
-                                <td>{{ $exam['name'] }}</td>
-                                <td>{{ $exam['academic_year'] }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="2" class="text-center text-muted py-3">
-                                    No exams configured yet.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Marksheet Download / Results list -->
+        <!-- All Marksheets / Results list -->
         <div class="card shadow-sm border-0 rounded-4 p-4">
-            <h5 class="fw-semibold mb-3">Digital Marksheets</h5>
+            <h5 class="fw-semibold mb-3">All Results History</h5>
 
             <div class="table-responsive">
                 <table class="table table-sm align-middle">

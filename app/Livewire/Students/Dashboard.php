@@ -444,6 +444,7 @@ class Dashboard extends Component
                 $this->latestResult = $latestResult;
 
                 // ----- Academic performance table (Unit / Half / Annual per subject) -----
+                // Show highest marks from any exam of each type (to show teacher-set marks)
                 $performanceRows = DB::table('subjects')
                     ->leftJoin('marks', function ($join) use ($student) {
                         $join->on('marks.subject_id', '=', 'subjects.id')
