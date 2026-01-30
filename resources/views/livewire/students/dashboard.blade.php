@@ -379,45 +379,114 @@
             </div>
         </div>
  
-        <!-- Alerts -->
-        <div class="col-lg-5">
-            <div class="card shadow-sm border-0 rounded-4 p-4">
-                <h5 class="fw-semibold mb-3">Alerts & Notifications</h5>
+            <!-- Alerts -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <h5 class="fw-semibold mb-3">Alerts & Notifications</h5>
  
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item px-0">💳 Fee payment due by Jan 31</li>
-                    <li class="list-group-item px-0">📘 Science marks updated</li>
-                    <li class="list-group-item px-0">📅 Parent-Teacher Meeting</li>
-                </ul>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item px-0">💳 Fee payment due by Jan 31</li>
+                        <li class="list-group-item px-0">📘 Science marks updated</li>
+                        <li class="list-group-item px-0">📅 Parent-Teacher Meeting</li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
- 
-    <!-- Bottom Row -->
-    <div class="row g-4">
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 rounded-4 p-4">
-                <h5 class="fw-semibold mb-2">Upcoming Activities</h5>
-                <p class="mb-1">🔬 Science Project – Feb 5</p>
-                <p class="mb-0">👨‍👩‍👧 Parent-Teacher Meeting</p>
+     
+        <!-- Bottom Row -->
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <h5 class="fw-semibold mb-2">Upcoming Activities</h5>
+                    <p class="mb-1">🔬 Science Project – Feb 5</p>
+                    <p class="mb-0">👨‍👩‍👧 Parent-Teacher Meeting</p>
+                </div>
+            </div>
+     
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0 rounded-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-semibold mb-0">Attendance Trend</h5>
+                        <a href="{{ route('student.attendance') }}" class="btn btn-sm btn-outline-primary">
+                            View Details <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div style="height: 220px;">
+                        <canvas id="attendanceChart"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
- 
+    @endif
 
-        <div class="col-lg-6">
-            <div class="card shadow-sm border-0 rounded-4 p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-semibold mb-0">Attendance Trend</h5>
-                    <a href="{{ route('student.attendance') }}" class="btn btn-sm btn-outline-primary">
-                        View Details <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-                <div style="height: 220px;">
-                    <canvas id="attendanceChart"></canvas>
+    @if($isTeacher)
+        <!-- Check-in Toast -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="checkinToast" class="toast align-items-center text-bg-success border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ✅ You have successfully checked in.
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
                 </div>
             </div>
         </div>
-    </div>
+    @endif
+
+    @if($isPrincipal && $selectedEnquiry)
+        <!-- Enquiry Detail Modal -->
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Enquiry Details</h5>
+                        <button type="button" class="btn-close" wire:click="closeEnquiryView" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th width="30%">Email From</th>
+                                <td>{{ $selectedEnquiry->email_from }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email To</th>
+                                <td>{{ $selectedEnquiry->email_to }}</td>
+                            </tr>
+                            <tr>
+                                <th>Subject</th>
+                                <td>{{ $selectedEnquiry->subject }}</td>
+                            </tr>
+                            <tr>
+                                <th>Message Text</th>
+                                <td>{{ $selectedEnquiry->message_text ?? 'N/A' }}</td>
+                            </tr>
+                            <tr>
+                                <th>Message HTML</th>
+                                <td>
+                                    @if($selectedEnquiry->message_html)
+                                        <div>{!! $selectedEnquiry->message_html !!}</div>
+                                    @else
+                                        N/A
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Created At</th>
+                                <td>{{ \Carbon\Carbon::parse($selectedEnquiry->created_at)->format('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th>Updated At</th>
+                                <td>{{ \Carbon\Carbon::parse($selectedEnquiry->updated_at)->format('Y-m-d H:i:s') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="closeEnquiryView">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
  
 @push('scripts')
